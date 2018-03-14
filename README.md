@@ -14,6 +14,6 @@
   •	Fabrication.
 # Progress till date:
   •	Designed/Developed a 3D CAD model of the snake-robot using Autodesk’s Fusion 360.
-  ![Optional Text]( ../Arboc/CADmodel.png )
+  ![alt text](https://github.com/imsenthur/Arboc/blob/master/CADmodel.png)
   
   
