@@ -38,5 +38,27 @@
     ready to be tethered.
 
   •	Eliminate the use of micro controller which makes it nearly impossible to implement reinforcement learning and autonomous path planning.
+  
+# Components to be used:
+  •	Beaglebone Blue:
+  
+    • Battery: 2-cell LiPo support with balancing, 9-18V charger input.
+  
+    • Features 9-axis IMU and barometer sensors.
+    
+    • Wi-Fi 802.11 b/g/n, Bluetooth 4.1 and BLE enabled.
+    
+    • 8x 6V servo outputs [Eliminates the need for MCU]
+    
+    • Better than Beaglebone black as it has the robotic cape integrated within it. In case of using Beaglebone black, robotics cape 
+      needs to be bought separately which would again be nearly impossible to accommodate.
+    
+    • Can be easily accommodated in the tail of the bot. [RPI3 was bulkier and needed a MCU which was nearly impossible to accommodate.]
+    
+  •	IMU - MPU6050: Inertial measurement unit for accelerometer and gyroscpe data inoder to implement PID control over the bot. 
+  
+  •	Ultrasound Range Finder: For collision avoidance.
+  
+  •	Endoscope camera: To image underwater pipelines and to retrieve frames for further image processing.
 
   
