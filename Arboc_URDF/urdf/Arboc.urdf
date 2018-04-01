@@ -1,0 +1,435 @@
+<robot
+  name="Arboc.SLDASM">
+  <link
+    name="head_link">
+    <inertial>
+      <origin
+        xyz="0.21209 0.073412 0.088981"
+        rpy="0 0 0" />
+      <mass
+        value="0.049805" />
+      <inertia
+        ixx="1.1571E-05"
+        ixy="1.0971E-10"
+        ixz="-3.5548E-10"
+        iyy="1.0623E-05"
+        iyz="2.7339E-06"
+        izz="9.4814E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/head_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/head_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link_0">
+    <inertial>
+      <origin
+        xyz="0.00073093 0.031103 0.022445"
+        rpy="0 0 0" />
+      <mass
+        value="0.066625" />
+      <inertia
+        ixx="1.5554E-05"
+        ixy="-1.5964E-08"
+        ixz="-1.5083E-06"
+        iyy="1.6007E-05"
+        iyz="-8.9711E-07"
+        izz="6.7554E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_0.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_0.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_0"
+    type="revolute">
+    <origin
+      xyz="0.21209 -0.046017 0.041737"
+      rpy="1.5315 -1.1726E-14 3.1269" />
+    <parent
+      link="head_link" />
+    <child
+      link="link_0" />
+    <axis
+      xyz="0 0.99923 0.03926" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link_1">
+    <inertial>
+      <origin
+        xyz="-0.095773 -0.0015423 0.014027"
+        rpy="0 0 0" />
+      <mass
+        value="0.066625" />
+      <inertia
+        ixx="1.5554E-05"
+        ixy="-7.5165E-08"
+        ixz="-1.5065E-06"
+        iyy="1.5913E-05"
+        iyz="-1.4958E-06"
+        izz="7.6955E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.97255 0.96863 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_1"
+    type="revolute">
+    <origin
+      xyz="0 -0.040771 -0.0016019"
+      rpy="-6.0666E-15 0.80893 -1.5708" />
+    <parent
+      link="link_0" />
+    <child
+      link="link_1" />
+    <axis
+      xyz="-0.71815 0 -0.69589" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link_2">
+    <inertial>
+      <origin
+        xyz="0.00073315 0.020286 0.011081"
+        rpy="0 0 0" />
+      <mass
+        value="0.066625" />
+      <inertia
+        ixx="1.5554E-05"
+        ixy="-7.5165E-08"
+        ixz="-1.5065E-06"
+        iyy="1.5913E-05"
+        iyz="-1.4958E-06"
+        izz="7.6955E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.97255 0.96863 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_2"
+    type="revolute">
+    <origin
+      xyz="-0.11833 0.0036174 0.064275"
+      rpy="-5.944E-16 -0.36561 -1.5708" />
+    <parent
+      link="link_1" />
+    <child
+      link="link_2" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link_3">
+    <inertial>
+      <origin
+        xyz="0.00073316 0.020286 0.011081"
+        rpy="0 0 0" />
+      <mass
+        value="0.066625" />
+      <inertia
+        ixx="1.5554E-05"
+        ixy="-7.5165E-08"
+        ixz="-1.5065E-06"
+        iyy="1.5913E-05"
+        iyz="-1.4958E-06"
+        izz="7.6955E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.97255 0.96863 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_3"
+    type="revolute">
+    <origin
+      xyz="-0.021826 0.024697 0.061584"
+      rpy="8.1042E-16 -0.2875 -1.5708" />
+    <parent
+      link="link_2" />
+    <child
+      link="link_3" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link_4">
+    <inertial>
+      <origin
+        xyz="0.0089068 0.0097991 0.0026316"
+        rpy="0 0 0" />
+      <mass
+        value="0.066625" />
+      <inertia
+        ixx="1.5554E-05"
+        ixy="-1.5965E-08"
+        ixz="-1.5082E-06"
+        iyy="1.6007E-05"
+        iyz="-8.9714E-07"
+        izz="6.7553E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_4"
+    type="revolute">
+    <origin
+      xyz="-0.011435 0.038644 0.063854"
+      rpy="-0.03927 -0.54485 -1.5708" />
+    <parent
+      link="link_3" />
+    <child
+      link="link_4" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="link_5">
+    <inertial>
+      <origin
+        xyz="0.00073316 0.020286 0.011081"
+        rpy="0 0 0" />
+      <mass
+        value="0.066625" />
+      <inertia
+        ixx="1.5554E-05"
+        ixy="-7.5165E-08"
+        ixz="-1.5065E-06"
+        iyy="1.5913E-05"
+        iyz="-1.4958E-06"
+        izz="7.6955E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.97255 0.96863 0.92941 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/link_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_5"
+    type="revolute">
+    <origin
+      xyz="-0.013653 0.010853 0.053517"
+      rpy="-3.0788E-15 -0.11052 -1.5708" />
+    <parent
+      link="link_4" />
+    <child
+      link="link_5" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="tail_link">
+    <inertial>
+      <origin
+        xyz="0.0047939 0.015046 0.082963"
+        rpy="0 0 0" />
+      <mass
+        value="0.10039" />
+      <inertia
+        ixx="6.9014E-05"
+        ixy="-1.7902E-09"
+        ixz="2.8277E-08"
+        iyy="6.8662E-05"
+        iyz="3.1993E-06"
+        izz="3.5261E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/tail_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Arboc.SLDASM/meshes/tail_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="tail_joint"
+    type="revolute">
+    <origin
+      xyz="-0.020707 0.020446 0.0080623"
+      rpy="-0.03927 -0.14131 -1.5708" />
+    <parent
+      link="link_5" />
+    <child
+      link="tail_link" />
+    <axis
+      xyz="0.053224 -0.10757 -0.99277" />
+    <limit
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
