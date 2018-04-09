@@ -21,13 +21,13 @@
 # Progress till date:
   •	Designed/Developed a 3D CAD model of the snake-robot using Autodesk’s Fusion 360.
   
-  ![alt text](https://github.com/imsenthur/Arboc/blob/master/CADmodel.png)
+  ![alt text](https://github.com/imsenthur/Arboc/blob/master/images/CADmodel.png)
   
   •	Simulation of a minimalistic design of the bot has been done with V-rep.
   
   •	3D printed all the individual parts and assembled it together.
   
-  ![alt text](https://github.com/imsenthur/Arboc/blob/master/Gaits.png)
+  ![alt text](https://github.com/imsenthur/Arboc/blob/master/images/Gaits.png)
   
 # Things to be done:
   •	Feedback control with IMUs [Each module holding one].
