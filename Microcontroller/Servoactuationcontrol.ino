@@ -8,6 +8,19 @@
 #include <stdlib.h>
 #include<avr/interrupt.h>
 
+// function to initialize UART
+void uart_init (void)
+{
+    UBRR0=207;  //Baud Rate 9600
+  UCSR0B|=(1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0);  //Enabling Recieve Interrupt enable,Transmitter and Reciever
+}
+
+void uart_transmit (unsigned char data)
+{
+    while (!( UCSR0A & (1<<UDRE0)));                // wait while register is free
+    UDR0 = data;                                   // load data in the register
+}
+
 /*
  * Serpentine lateral plane:
  * a=0.6*pi
@@ -45,13 +58,17 @@ Servo s4;
 Servo s5;
 Servo s6;
 Servo s7;
-int direc =48;
+int gait=2;
+int direc=2;
 const float pi = 3.141593;
 int counter = 0; 
 int frequency = 1; 
 int startPause = 2000; 
-int data=52;
-int previousdata=52;
+int data[2];
+int flag=0;
+
+char tx='1';
+
 float a = 0.9*pi;                                   //Ampli Coeff
 float b = 1*pi;                                     //Curve Coeff      
 float c = 0;                                        //Turn Coeff
@@ -61,9 +78,18 @@ float beta=b/num_segments;
 float alpha=a*abs(sin(beta/2));
 unsigned long previousMillis = 0;
 long interval = 4;
+
+RF24 radio(6, 7); // CE, CSN
+const byte address[6] = "00001";
+
 void setup() 
 {
+  uart_init();
   Serial.begin(9600);
+  radio.begin();
+  radio.openReadingPipe(0, address);
+  radio.setPALevel(RF24_PA_MIN);
+  radio.startListening();
 
   // Attach segments to pins  
    s1.attach(3); //blue left - 1st servo
@@ -87,274 +113,65 @@ void setup()
 }
 void loop() 
 {
-   if(Serial.available() > 0)      // Send data only when you receive data:
-   {
-      data = Serial.read();        //Read the incoming data & store into data
-      Serial.print(data);          //Print Value inside data in Serial monitor  
-      if(data != 52 && data !=53)
-      {
-        direc = data; 
-        data = previousdata;
-        Serial.println("direction added");
-      }
-   }
-  if(data==52)
-  {/*
-    Serial.println("Helical on");
-    //Helical gait
-         if(direc ==48)
-        {
-          Serial.println("heli straight");
-          a=0.8*pi;
-          b=2*pi;
-          c=0;
-          num_segments = 8;
-          gamma=-c/num_segments;
-          beta=b/num_segments;
-          alpha=a*abs(sin(beta/2));
-          //Serial.println("helical");
-          for(counter = 0; counter < 360;) 
-          {
-            unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval)
-            {
-              previousMillis = currentMillis;
-              s1.write(90 + (alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
-              //Serial.println((alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
-              s2.write(90 + (alpha*sin(frequency*counter*pi/180+1*beta+pi/2)+gamma)*180/pi);
-              s3.write(90 + (alpha*sin(frequency*counter*pi/180+2*beta)+gamma)*180/pi);
-              s4.write(90 + (alpha*sin(frequency*counter*pi/180+3*beta+pi/2)+gamma)*180/pi);
-              s5.write(90 + (alpha*sin(frequency*counter*pi/180+4*beta)+gamma)*180/pi);
-              s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+5*beta+pi/2)+gamma)*180/pi);
-              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180+6*beta)+gamma)*180/pi);
-              counter += 1;
-            }       
-          }
-        }
-        else if(direc ==49)
-        {
-          Serial.println("heli right");
-          a=0.8*pi;
-          b=2*pi;
-          c=0;
-          num_segments = 8;
-          gamma=-c/num_segments;
-          beta=b/num_segments;
-          alpha=a*abs(sin(beta/2));
-          //Serial.println("helical");
-          for(counter = 0; counter < 360;) 
-          {
-            unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval)
-            {
-              previousMillis = currentMillis;
-              s1.write(90 + (alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
-              //Serial.println((alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
-              s2.write(90 + (alpha*sin(frequency*counter*pi/180+1*beta+pi/2)+gamma)*180/pi);
-              s3.write(90 + (alpha*sin(frequency*counter*pi/180+2*beta)+gamma)*180/pi);
-              s4.write(90 + (alpha*sin(frequency*counter*pi/180+3*beta+pi/2)+gamma)*180/pi);
-              s5.write(90 + (alpha*sin(frequency*counter*pi/180+4*beta)+gamma)*180/pi);
-              s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+5*beta+pi/2)+gamma)*180/pi);
-              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180+6*beta)+gamma)*180/pi);
-              counter += 1;
-            }       
-          }
-        }
-        else if(direc ==50)
-        {
-          Serial.println("heli back");
-          a=0.8*pi;
-          b=2*pi;
-          c=0;
-          num_segments = 8;
-          gamma=-c/num_segments;
-          beta=b/num_segments;
-          alpha=a*abs(sin(beta/2));
-          //Serial.println("helical");
-          for(counter = 0; counter < 360;) 
-          {
-            unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval)
-            {
-              previousMillis = currentMillis;
-              s1.write(90 + (alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
-              //Serial.println((alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
-              s2.write(90 + (alpha*sin(frequency*counter*pi/180+1*beta+pi/2)+gamma)*180/pi);
-              s3.write(90 + (alpha*sin(frequency*counter*pi/180+2*beta)+gamma)*180/pi);
-              s4.write(90 + (alpha*sin(frequency*counter*pi/180+3*beta+pi/2)+gamma)*180/pi);
-              s5.write(90 + (alpha*sin(frequency*counter*pi/180+4*beta)+gamma)*180/pi);
-              s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+5*beta+pi/2)+gamma)*180/pi);
-              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180+6*beta)+gamma)*180/pi);
-              counter += 1;
-            }       
-          }
-        }
-        else if(direc ==51)
-        {
-          Serial.println("heli left");
-          a=0.8*pi;
-          b=2*pi;
-          c=0;
-          num_segments = 8;
-          gamma=-c/num_segments;
-          beta=b/num_segments;
-          alpha=a*abs(sin(beta/2));
-          //Serial.println("helical");
-          for(counter = 0; counter < 360;) 
-          {
-            unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval)
-            {
-              previousMillis = currentMillis;
-              s1.write(90 + (alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
-              //Serial.println((alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
-              s2.write(90 + (alpha*sin(frequency*counter*pi/180+1*beta+pi/2)+gamma)*180/pi);
-              s3.write(90 + (alpha*sin(frequency*counter*pi/180+2*beta)+gamma)*180/pi);
-              s4.write(90 + (alpha*sin(frequency*counter*pi/180+3*beta+pi/2)+gamma)*180/pi);
-              s5.write(90 + (alpha*sin(frequency*counter*pi/180+4*beta)+gamma)*180/pi);
-              s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+5*beta+pi/2)+gamma)*180/pi);
-              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180+6*beta)+gamma)*180/pi);
-              counter += 1;
-            }       
-          }
-        }
-    previousdata = data;
-    */
-        //Serpentine gait
-         if(direc == 48)
-        {
-          //Serial.println("hell");
-          a=0.6*pi;
-          b=2*pi;
-          c=0*pi;
-          num_segments = 5;
-          gamma=-c/num_segments;
-          beta=b/num_segments;
-          alpha=a*abs(sin(beta/2));
-          interval = 3;
-          //Serial.println("Serpentine forward");
-            // Serpentine motion
-          for(counter = 0; counter < 360;) 
-          {
-            unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval)
-            {
-              previousMillis = currentMillis;
-              s1.write(90 + (alpha*sin(frequency*counter*pi/180-0*beta)+gamma)*180/pi);
-              //Serial.println(90 + (alpha*sin(frequency*counter*pi/180-1*beta)+gamma)*180/pi);
-              //s2.write(90 + (alpha*sin(frequency*counter*pi/180+0.1*beta+pi/2)+gamma)*180/pi);
-              s3.write(90 + (alpha*sin(frequency*counter*pi/180-2*beta)+gamma)*180/pi);
-              //s4.write(90 + (alpha*sin(frequency*counter*pi/180+0.3*beta+pi/2)+gamma)*180/pi);
-              s5.write(90 + (alpha*sin(frequency*counter*pi/180-4*beta)+gamma)*180/pi);
-              //s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+0.5*beta+pi/2)+gamma)*180/pi);
-              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180-6*beta)+gamma)*180/pi);
-              counter += 1;
-            }       
-          }
-        }
-        else if(direc == 49)
-        {
-          a=0.6*pi;
-          b=2*pi;
-          c=0.2*pi;
-          num_segments = 5;
-          gamma=-c/num_segments;
-          beta=b/num_segments;
-          alpha=a*abs(sin(beta/2));
-          //Serial.println("Serpentine right");
-          
-            // Serpentine motion right
-          for(counter = 0; counter < 360;) 
-          {
-            unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval)
-            {
-              previousMillis = currentMillis;
-              s1.write(90 + (alpha*sin(frequency*counter*pi/180-1*beta+pi)+gamma)*180/pi);
-              //Serial.println(90 + (alpha*sin(frequency*counter*pi/180-1*beta)+gamma)*180/pi);
-              //s2.write(90 + (alpha*sin(frequency*counter*pi/180+0.1*beta+pi/2)+gamma)*180/pi);
-              s3.write(90 + (alpha*sin(frequency*counter*pi/180-2*beta+pi)+gamma)*180/pi);
-              //s4.write(90 + (alpha*sin(frequency*counter*pi/180+0.3*beta+pi/2)+gamma)*180/pi);
-              s5.write(90 + (alpha*sin(frequency*counter*pi/180-3*beta+pi)+gamma)*180/pi);
-              //s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+0.5*beta+pi/2)+gamma)*180/pi);
-              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180-4*beta+pi)+gamma)*180/pi);
-              counter += 1;
-            }       
-          }
-        }
-        else if(direc == 50)
-        {
-          a=0.6*pi;
-          b=2*pi;
-          c=-0.2*pi;
-          num_segments = 5;
-          gamma=-c/num_segments;
-          beta=b/num_segments;
-          alpha=a*abs(sin(beta/2));
-          //Serial.println("Serpentine left");
-          
-            // Serpentine motion left
-          for(counter = 0; counter < 360;) 
-          {
-            unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval)
-            {
-              previousMillis = currentMillis;
-              s1.write(90 + (alpha*sin(frequency*counter*pi/180-1*beta+pi)+gamma)*180/pi);
-              //Serial.println(90 + (alpha*sin(frequency*counter*pi/180-1*beta)+gamma)*180/pi);
-              //s2.write(90 + (alpha*sin(frequency*counter*pi/180+0.1*beta+pi/2)+gamma)*180/pi);
-              s3.write(90 + (alpha*sin(frequency*counter*pi/180-2*beta+pi)+gamma)*180/pi);
-              //s4.write(90 + (alpha*sin(frequency*counter*pi/180+0.3*beta+pi/2)+gamma)*180/pi);
-              s5.write(90 + (alpha*sin(frequency*counter*pi/180-3*beta+pi)+gamma)*180/pi);
-              //s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+0.5*beta+pi/2)+gamma)*180/pi);
-              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180-4*beta+pi)+gamma)*180/pi);
-              counter += 1;
-            }       
-          }
-        }
-        else if(direc == 51)
-        {
-          a=0.6*pi;
-          b=2*pi;
-          c=0*pi;
-          num_segments = 5;
-          gamma=-c/num_segments;
-          beta=b/num_segments;
-          alpha=a*abs(sin(beta/2));
-          //Serial.println("Serpentine backward");
-          
-            // Serpentine motion
-          for(counter = 0; counter < 360;) 
-          {
-            unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval)
-            {
-              previousMillis = currentMillis;
-              s1.write(90 + (alpha*sin(frequency*counter*pi/180-1*beta+pi)+gamma)*180/pi);
-              //Serial.println(90 + (alpha*sin(frequency*counter*pi/180-1*beta)+gamma)*180/pi);
-              //s2.write(90 + (alpha*sin(frequency*counter*pi/180+0.1*beta+pi/2)+gamma)*180/pi);
-              s3.write(90 + (alpha*sin(frequency*counter*pi/180-2*beta+pi)+gamma)*180/pi);
-              //s4.write(90 + (alpha*sin(frequency*counter*pi/180+0.3*beta+pi/2)+gamma)*180/pi);
-              s5.write(90 + (alpha*sin(frequency*counter*pi/180-3*beta+pi)+gamma)*180/pi);
-              //s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+0.5*beta+pi/2)+gamma)*180/pi);
-              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180-4*beta+pi)+gamma)*180/pi);
-              counter += 1;
-            }       
-          }
-        }
-        previousdata = data;
-  }
-  else if(data==53)
+  if (radio.available())
   {
-    Serial.println("Rolling");
-    if(direc != 49 && direc != 51)
-    {
-      direc = 49;
-    }
-    //Rolling gait
-          if(direc == 49)
+    //Serial.println("YEAH");
+    radio.read(&data, sizeof(data));
+    direc =data[0];
+    gait =data[1];
+    //Serial.println(gait);
+    //Serial.println(direc);
+  } 
+  if(gait==3 && flag ==0)
+  {
+    flag =1;
+    Serial.println("The gait is:");
+    Serial.println(gait);
+    Serial.println("direction:");
+    Serial.println(direc);
+
+    //Helical gait
+         if(direc ==2)
         {
-          Serial.println("Starting to roll right");
+          a=0.8*pi;
+          b=2*pi;
+          c=0;
+          num_segments = 8;
+          gamma=-c/num_segments;
+          beta=b/num_segments;
+          alpha=a*abs(sin(beta/2));
+          //Serial.println("helical");
+          for(counter = 0; counter < 360;) 
+          {
+            unsigned long currentMillis = millis();
+            if (currentMillis - previousMillis >= interval)
+            {
+              previousMillis = currentMillis;
+              s1.write(90 + (alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
+              //Serial.println((alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
+              s2.write(90 + (alpha*sin(frequency*counter*pi/180+1*beta+pi/2)+gamma)*180/pi);
+              s3.write(90 + (alpha*sin(frequency*counter*pi/180+2*beta)+gamma)*180/pi);
+              s4.write(90 + (alpha*sin(frequency*counter*pi/180+3*beta+pi/2)+gamma)*180/pi);
+              s5.write(90 + (alpha*sin(frequency*counter*pi/180+4*beta)+gamma)*180/pi);
+              s6.write(90 - 13 + (alpha*sin(frequency*counter*pi/180+5*beta+pi/2)+gamma)*180/pi);
+              s7.write(90 - 7 + (alpha*sin(frequency*counter*pi/180+6*beta)+gamma)*180/pi);
+              counter += 1;
+            }       
+          }
+        }
+    flag =0;
+  }
+  else if(gait==2 && flag ==0)
+  {
+    flag =1;
+    Serial.println("The gait is:");
+    Serial.println(gait);
+    Serial.println("direction:");
+    Serial.println(direc);
+
+    //Rolling gait
+          if(direc ==2 || direc == 4)
+        {
           //Roll right
           a=0.9*pi;
           b=1.0*pi;
@@ -363,11 +180,10 @@ void loop()
           gamma=-c/num_segments;
           beta=b/num_segments;
           alpha=a*abs(sin(beta/2));
-          interval = 7;
           for(counter = 0; counter < 360;) 
           {
             unsigned long currentMillis = millis();
-            if (currentMillis - previousMillis >= interval);
+            if (currentMillis - previousMillis >= interval)
             {
               previousMillis = currentMillis;
               s1.write(90 + (alpha*sin(frequency*counter*pi/180+0*beta)+gamma)*180/pi);
@@ -381,9 +197,8 @@ void loop()
             }       
           }
         }
-         else if(direc == 51)
+         else if(direc == 0 || direc == 6)
         {
-          Serial.println("Rollingleft");
           //Roll left
           a=0.9*pi;
           b=1*pi;
@@ -392,7 +207,6 @@ void loop()
           gamma=-c/num_segments;
           beta=b/num_segments;
           alpha=a*abs(sin(beta/2));
-          interval = 7;
           for(counter = 0; counter < 360;) 
           {
             unsigned long currentMillis = millis();
@@ -410,18 +224,8 @@ void loop()
             }       
           }
         }
-    previousdata = data;
-
-   s1.write(90);
-   s2.write(90);
-   s3.write(90);
-   s4.write(90);
-   s5.write(90);
-   s6.write(90-13); 
-   s7.write(90-7); 
-    
+    flag =0;
   }
-  /*
   else if(gait==1 && flag ==0)
   {
     flag = 1;
@@ -433,7 +237,6 @@ void loop()
         //Serpentine gait
          if(direc == 2)
         {
-          Serial.println("hell");
           a=1.5*pi;
           b=3*pi;
           c=0*pi;
@@ -555,5 +358,25 @@ void loop()
         
       flag =0;
   }
-  */
+  else if(gait==0 && flag ==0)
+  {
+    flag=1;
+    Serial.println("The gait is:");
+    Serial.println(gait);
+    Serial.println("direction:");
+    Serial.println(direc);
+    //a=UDR0;
+    //Serial.println("Sending");
+    //Serial.println(tx);
+    //uart_transmit(tx);  
+    //Serial.write(tx);
+    //delay(100);
+    flag =0;
+  }
+
+
+
+  
+
+
 }
