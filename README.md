@@ -61,6 +61,10 @@
   
   •	Endoscope camera: To image underwater pipelines and to retrieve frames for further image processing.
 
-  # Test environment:
+# Test environment:
   
   * Currently looking for a test environment inorder to improve on the generated gaits and study how the bot behaves underwater.
+  * Have plans to build a fish tank which would be perfect for motion analysis of the bot.
+  
+# Repository organized.
+  
