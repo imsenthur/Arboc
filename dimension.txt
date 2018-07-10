@@ -1,0 +1,21 @@
+Head:
+	Ixx=0.00021427111 kg*m2
+	Iyy=0.00021427111 kg*m2
+	Izz=0.000054 kg*m2
+	rad=0.0335 m
+	length=0.0765 m
+	mass=0.095875 kg
+Module:
+	Ixx=0.0001378755 kg*m2
+	Iyy=0.0001378755 kg*m2
+	Izz=0.000052 kg*m2
+	rad=0.0335 m
+	length=0.06 m
+	mass=0.093195 kg
+Tail:
+	Ixx=0.00064931795 kg*m2
+	Iyy=0.00064931795 kg*m2
+	Izz=0.000074 kg*m2
+	rad=33.50mm
+	length=118mm
+	mass=0.13195 kg
