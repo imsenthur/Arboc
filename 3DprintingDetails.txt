@@ -1,0 +1,17 @@
+Total types of brackets: 3
+
+Required quantity of type 1 bracket: 7
+volume of type 1 bracket: 16.65 CC
+Total volume of type 1 brackets: 116.55
+
+Required quantity of type 2 bracket: 7
+volume of type 2 bracket: 5.770 CC
+Total volume of type 2 brackets: 40.39
+
+Required quantity of type 3 bracket: 7
+volume of type 3 bracket: 10.82 CC
+Total volume of type 3 brackets: 75.74
+
+Total number of required brackets: 21
+Total volume: 232.68
+
