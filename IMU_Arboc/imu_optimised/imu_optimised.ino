@@ -1,15 +1,26 @@
-//<-------------------------------------------->
-//<-------IMU 6050 kalman Filter code---------->
-//<-------Code By : Manu Aatitya R P----------->
-//<-------Language : Arduino------------------->
-//<-------------------------------------------->
+// ================================================================
+// ===               IMU 6050 KALMAN FILTER CODE                ===
+// ===               CODE BY MANU AATITYA R P                   ===
+// ===               lANGUAGE : ARDUINO                         ===
+// ================================================================
+
 
 // This contains the basic code to get values from 2 MPU 6050 simultaneously
 
-// Include the necessary libraries
+// ===============================================================================
+// ===               NECESSARY VARIABLES AND LIBRARIES INCLUDED                ===
+// ===============================================================================
+
 #include<Wire.h>
 
 # define Number_of_IMU 2
+
+# define TCAADDR 0x70 //Address of Multiplexer
+
+extern "C" {
+include "utility/twi.h" // from Wire library, so we can do bus scanning
+
+}
 
 // Define necessary variables
 const int MPU_address[Number_of_IMU] = {0x68 , 0x69};  // I2C address of the MPUs
@@ -39,8 +50,13 @@ double angle_bias[Number_of_IMU] = {0.001,0.001};
 double measurement_bias[Number_of_IMU] = {0.003,0.003}; 
 double covariance_measure[Number_of_IMU] = {0.003,0.003}; 
 
+
+// ======================================================================
+// ===               CONFIGURE I2C MULTIPLEXER ROUTINE                ===
+// ======================================================================
+
 // Configuring first MPU
-void configure_MPU()
+void configure_multiplexer()
 {
   for(int i=0;i < Number_of_IMU;i++)
   {
@@ -52,6 +68,10 @@ void configure_MPU()
   }
   
 }
+
+// ================================================================
+// ===               KALMAN FUNCTION ROUTINE                    ===
+// ================================================================
 
 // Kalman Function 
 void Kalman(double z[3],double theta_dot[3],double dt,int imu_number)
@@ -80,6 +100,10 @@ void Kalman(double z[3],double theta_dot[3],double dt,int imu_number)
     theta[imu_number][i] = angle[i];
   }
 } 
+
+// ================================================================
+// ===               DATA RETRIEVAL ROUTINE                     ===
+// ================================================================
 
 // Function to retrieve data from MPU
 void getDataFromMPU(const int MPU_address)
@@ -149,16 +173,24 @@ void getDataFromMPU(const int MPU_address)
   
 }
 
+// ================================================================
+// ===                      SETUP  ROUTINE                      ===
+// ================================================================
+
 // Setup loop
 void setup()
 {
-  configure_MPU;
+  configure_multiplexer();
   for(int i=0;i<2;i++)
   {
     time_step[i] = millis();
   }
   Serial.begin(9600); // set baud rate to 9600 for serial communication
 }
+
+// ================================================================
+// ===                     MAIN ROUTINE                         ===
+// ================================================================
 
 // Main loop
 void loop()
@@ -169,8 +201,8 @@ void loop()
     Serial.print("MPU");
     Serial.println(i+1);
     getDataFromMPU(MPU_address[i]);
-    delay(333); // To avoid too much results in the serial monitor
   }
+  delay(333); // To avoid too much results in the serial monitor
   Serial.print("RelativeTheta X = "); Serial.print(theta[1][0] - theta[0][0]);
   Serial.print(" | RelativeTheta_Y = "); Serial.print(theta[1][1] - theta[0][1]);
   Serial.print(" | RelativeTheta_Z = "); Serial.println(theta[1][2] - theta[0][2]);
