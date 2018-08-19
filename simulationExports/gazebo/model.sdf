@@ -1,0 +1,358 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+	<model name="snake">
+		<!--> ************ Base Link ************ <-->
+		<link name="base_link">
+			<pose>0 0 0.03825 0 0 0</pose>
+			<inertial>
+				<mass>0.095875</mass>
+				<inertia>
+					<ixx>0.00021427111</ixx>
+					<iyy>0.00021427111</iyy>
+					<izz>0.000054</izz>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyz>0</iyz>
+				</inertia>
+			</inertial>
+			<collision name="base_link_collision">
+				<pose>0 -0.001381485 0.0025 0 0 0</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/head_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="base_link_visual">
+				<pose>0 -0.001381485 0.0025 0 0 0</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/head_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+
+		<!--> ************ Link 01 ************ <-->
+		<link name="link_1">
+			<pose>0 0 0.1115 0 0 0</pose>
+			<inertial>
+				<mass>0.093195</mass>
+				<inertia>
+					<ixx>0.0001378755</ixx>
+					<iyy>0.0001378755</iyy>
+					<izz>0.000052</izz>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyz>0</iyz>
+				</inertia>
+			</inertial>
+			<collision name="link_1_collision">
+				<pose>0.001381485 0 0.0125 0 0 0</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="link_1_visual">
+				<pose>0.001381485 0 0.0125 0 0 0</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+
+		<!--> ************ Joint 01 [link 01] ************ <-->
+		<joint type="revolute" name="revolute_1">
+			<pose>0 0 -0.0145 0 0 0</pose>
+			<parent>base_link</parent>
+			<child>link_1</child>
+			<axis>
+				<xyz>0 1 0</xyz>
+				<limit>
+					<lower>-1.309</lower>
+					<upper>1.309</upper>
+				</limit>
+			</axis>
+		</joint>
+
+		<!--> ************ Link 02 ************ <-->
+		<link name="link_2">
+			<pose>0 0 0.1735 0 0 0</pose>
+			<inertial>
+				<mass>0.093195</mass>
+				<inertia>
+					<ixx>0.0001378755</ixx>
+					<iyy>0.0001378755</iyy>
+					<izz>0.000052</izz>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyz>0</iyz>
+				</inertia>
+			</inertial>
+			<collision name="link_2_collision">
+				<pose>0 -0.001381485 0.0125 0 0 -1.570795</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="link_2_visual">
+				<pose>0 -0.001381485 0.0125 0 0 -1.570795</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+
+		<!--> ************ Joint 02 [link 02] ************ <-->
+		<joint type="revolute" name="revolute_2">
+			<pose>0 0 -0.0145 0 0 0</pose>
+			<parent>link_1</parent>
+			<child>link_2</child>
+			<axis>
+				<xyz>1 0 0</xyz>
+				<limit>
+					<lower>-1.309</lower>
+					<upper>1.309</upper>
+				</limit>
+			</axis>
+		</joint>
+
+		<!--> ************ Link 03 ************ <-->
+		<link name="link_3">
+			<pose>0 0 0.2355 0 0 0</pose>
+			<inertial>
+				<mass>0.093195</mass>
+				<inertia>
+					<ixx>0.0001378755</ixx>
+					<iyy>0.0001378755</iyy>
+					<izz>0.000052</izz>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyz>0</iyz>
+				</inertia>
+			</inertial>
+			<collision name="link_3_collision">
+				<pose>-0.001381485 0 0.0125 0 0 3.14159</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="link_3_visual">
+				<pose>-0.001381485 0 0.0125 0 0 3.14159</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+
+		<!--> ************ Joint 03 [link 03] ************ <-->
+		<joint type="revolute" name="revolute_3">
+			<pose>0 0 -0.0145 0 0 0</pose>
+			<parent>link_2</parent>
+			<child>link_3</child>
+			<axis>
+				<xyz>0 1 0</xyz>
+				<limit>
+					<lower>-1.309</lower>
+					<upper>1.309</upper>
+				</limit>
+			</axis>
+		</joint>
+
+		<!--> ************ Link 04 ************ <-->
+		<link name="link_4">
+			<pose>0 0 0.2975 0 0 0</pose>
+			<inertial>
+				<mass>0.093195</mass>
+				<inertia>
+					<ixx>0.0001378755</ixx>
+					<iyy>0.0001378755</iyy>
+					<izz>0.000052</izz>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyz>0</iyz>
+				</inertia>
+			</inertial>
+			<collision name="link_4_collision">
+				<pose>0 0.001381485 0.0125 0 0 1.570795</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="link_4_visual">
+				<pose>0 0.001381485 0.0125 0 0 1.570795</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+
+		<!--> ************ Joint 04 [link 04] ************ <-->
+		<joint type="revolute" name="revolute_4">
+			<pose>0 0 -0.0145 0 0 0</pose>
+			<parent>link_3</parent>
+			<child>link_4</child>
+			<axis>
+				<xyz>1 0 0</xyz>
+				<limit>
+					<lower>-1.309</lower>
+					<upper>1.309</upper>
+				</limit>
+			</axis>
+		</joint>
+
+		<!--> ************ Link 05 ************ <-->
+		<link name="link_5">
+			<pose>0 0 0.3595 0 0 0</pose>
+			<inertial>
+				<mass>0.093195</mass>
+				<inertia>
+					<ixx>0.0001378755</ixx>
+					<iyy>0.0001378755</iyy>
+					<izz>0.000052</izz>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyz>0</iyz>
+				</inertia>
+			</inertial>
+			<collision name="link_5_collision">
+				<pose>0.001381485 0 0.0125 0 0 0</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="link_5_visual">
+				<pose>0.001381485 0 0.0125 0 0 0</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+
+		<!--> ************ Joint 05 [link 05] ************ <-->
+		<joint type="revolute" name="revolute_5">
+			<pose>0 0 -0.0145 0 0 0</pose>
+			<parent>link_4</parent>
+			<child>link_5</child>
+			<axis>
+				<xyz>0 1 0</xyz>
+				<limit>
+					<lower>-1.309</lower>
+					<upper>1.309</upper>
+				</limit>
+			</axis>
+		</joint>
+
+		<!--> ************ Link 06 ************ <-->
+		<link name="link_6">
+			<pose>0 0 0.4215 0 0 0</pose>
+			<inertial>
+				<mass>0.093195</mass>
+				<inertia>
+					<ixx>0.0001378755</ixx>
+					<iyy>0.0001378755</iyy>
+					<izz>0.000052</izz>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyz>0</iyz>
+				</inertia>
+			</inertial>
+			<collision name="link_6_collision">
+				<pose>0 -0.001381485 0.0125 0 0 -1.570795</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="link_6_visual">
+				<pose>0 -0.001381485 0.0125 0 0 -1.570795</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/module_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+
+		<!--> ************ Joint 06 [link 06] ************ <-->
+		<joint type="revolute" name="revolute_6">
+			<pose>0 0 -0.0145 0 0 0</pose>
+			<parent>link_5</parent>
+			<child>link_6</child>
+			<axis>
+				<xyz>1 0 0</xyz>
+				<limit>
+					<lower>-1.309</lower>
+					<upper>1.309</upper>
+				</limit>
+			</axis>
+		</joint>
+
+		<!--> ************ Tail link ************ <-->
+		<link name="tail_link">
+			<pose>0 0 0.51325 0 0 0</pose>
+			<inertial>
+				<mass>0.093195</mass>
+				<inertia>
+					<ixx>0.0001378755</ixx>
+					<iyy>0.0001378755</iyy>
+					<izz>0.000052</izz>
+					<ixy>0</ixy>
+					<ixz>0</ixz>
+					<iyz>0</iyz>
+				</inertia>
+			</inertial>
+			<collision name="tail_link_collision">
+				<pose>0 0.00185 0.0125 0 0 3.14159</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/tail_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</collision>
+			<visual name="tail_link_visual">
+				<pose>0 0.00185 0.0125 0 0 3.14159</pose>
+				<geometry>
+					<mesh>
+						<uri>model://snake/meshes/tail_ori.dae</uri>
+					</mesh>
+				</geometry>
+			</visual>
+		</link>
+
+		<!--> ************ Joint Tail [Tail] ************ <-->
+		<joint type="revolute" name="tail_revolute">
+			<pose>0 0 -0.04375 0 0 0</pose>
+			<parent>link_6</parent>
+			<child>tail_link</child>
+			<axis>
+				<xyz>0 1 0</xyz>
+				<limit>
+					<lower>-1.309</lower>
+					<upper>1.309</upper>
+				</limit>
+			</axis>
+		</joint>
+	</model>
+</sdf>
