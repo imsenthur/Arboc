@@ -11,11 +11,12 @@
 
 #include<Wire.h>
 
-# define Number_of_IMU 5
+# define Number_of_IMU 6
 
 # define TCAADDR 0x70 // Address of Multiplexer
 
-# define MPU_address 0x68 // Address of multiplexer
+# define MPU_address 0x68 // Address of imu 1
+//# define MPU_address2 0x69 // Address of imu 2
 
 int counter = 0;
 
@@ -41,9 +42,9 @@ double k[Number_of_IMU][3][2] = {0};
 double bias[Number_of_IMU][3] = {0};
 
 // Kalman Coefficients for Covariance matrices
-double angle_bias = 0.05; //0.003  // 0.05 made the values closer
-double measurement_bias = 0.03; //0.003
-double covariance_measure = 0.003; 
+double angle_bias = 1.50; //0.003  // 0.05 made the values closer
+double measurement_bias = 1.50; //0.003
+double covariance_measure = 0.03; // 0.003 
 
 // ================================================================
 // ===               IMU SELECTION ROUTINE                      ===
@@ -63,7 +64,7 @@ void select_imu(uint8_t i)
 // ======================================================================
 
 // Configuring first MPU
-void configure_multiplexer(int i)
+void configure_multiplexer(int i)//,const int MPU_address)
 {
     Wire.begin(); // initialize I2C
     select_imu(i);
@@ -80,6 +81,13 @@ void configure_multiplexer(int i)
     Wire.beginTransmission(MPU_address); // start test transmission
     Wire.write(0x1C);  // accelerometer specifications register
     Wire.write(0x00);     // pull down logic and preventing from going to sleep mode   +- 2g configuration
+    Wire.endTransmission(true);
+
+    Wire.beginTransmission(MPU_address);
+    Wire.write(0x19); // Accessing register to change sampling rate 
+    Wire.write(19);     // Setting the sampling rate to 50 hz based on the formula : sampling rate = (Output_rate)/(1+Sampling_rate_divider)
+                        // this is reasonable as each motion processing requires about 3 ms to process so for a total of 6 imus 18 ms 
+                        // but our update rate is 50hz giving us 20ms between two updates.
     Wire.endTransmission(true);
 }
 
@@ -124,35 +132,40 @@ void getDataFromMPU()
 {
   for(int i = 0 ;i < Number_of_IMU ; i++)
   {
-    configure_multiplexer(i);
-    select_imu(i);
-    Wire.beginTransmission(MPU_address);
-    Wire.write(0x3B);   // register to access acceleration x high 
-    Wire.endTransmission(false);
-    Wire.requestFrom(MPU_address,6);
-    while(Wire.available() < 6);
-    ax = Wire.read() << 8 | Wire.read();
-    ay = Wire.read() << 8 | Wire.read();
-    az = Wire.read() << 8 | Wire.read();
     
-    // Leaving Register which gets Temperature values
-    
-    Wire.beginTransmission(MPU_address);
-    Wire.write(0x43);   // Register to access gyroscope x high
-    Wire.endTransmission(false);
-    Wire.requestFrom(MPU_address,6);
-    while(Wire.available() < 6);
-    wx = Wire.read() << 8 | Wire.read();
-    wy = Wire.read() << 8 | Wire.read();
-    wz = Wire.read() << 8 | Wire.read();
+      configure_multiplexer(i);//,MPU_address);
+      select_imu(i);
+    /*
+      configure_multiplexer(6);//,MPU_address);
+      select_imu(6);
+    */
+      Wire.beginTransmission(MPU_address);
+      Wire.write(0x3B);   // register to access acceleration x high 
+      Wire.endTransmission(false);
+      Wire.requestFrom(MPU_address,6);
+      while(Wire.available() < 6);
+      ax = Wire.read() << 8 | Wire.read();
+      ay = Wire.read() << 8 | Wire.read();
+      az = Wire.read() << 8 | Wire.read();
+      
+      // Leaving Register which gets Temperature values
+      
+      Wire.beginTransmission(MPU_address);
+      Wire.write(0x43);   // Register to access gyroscope x high
+      Wire.endTransmission(false);
+      Wire.requestFrom(MPU_address,6);
+      while(Wire.available() < 6);
+      wx = Wire.read() << 8 | Wire.read();
+      wy = Wire.read() << 8 | Wire.read();
+      wz = Wire.read() << 8 | Wire.read();
 
-    //Serial.print(ax);Serial.print(" |");Serial.print(ay);Serial.print(" |");Serial.print(az);Serial.println(" |");
+    // Serial.print(ax);Serial.print(" |");Serial.print(ay);Serial.print(" |");Serial.print(az);Serial.println(" |");
     // time elapsed since taking gyroscope readings
     previous_time[i] = time_step[i];
     time_step[i] = millis();
     time_elapsed[i] = (time_step[i] - previous_time[i] ) / 1000.0;
 
-      // Calculating g values from the raw data obtained from MPU
+    // Calculating g values from the raw data obtained from MPU
 
     // Accelerometer
     // sensitivity scale factor of the accelerometer is 16384 counts/g
@@ -167,7 +180,7 @@ void getDataFromMPU()
     theta_predicted[i][0][1] = (180/3.141592) * atan(g_predicted[i][0][1] / sqrt(square(g_predicted[i][0][0]) + square(g_predicted[i][0][2])));
     theta_predicted[i][0][2] = (180/3.141592) * atan(sqrt(square(g_predicted[i][0][1]) + square(g_predicted[i][0][0])) / g_predicted[i][0][2]);
     
-    //Serial.print(theta_predicted[i][0][0]);Serial.print(" | ");Serial.print(theta_predicted[i][0][1]);Serial.print(" | ");Serial.print(theta_predicted[i][0][2]);Serial.print(" | ");
+    // Serial.print(theta_predicted[i][0][0]);Serial.print(" | ");Serial.print(theta_predicted[i][0][1]);Serial.print(" | ");Serial.print(theta_predicted[i][0][2]);Serial.println(" | ");
     
     // Gyroscope
     // Sensitivity scale factor of gyroscope is 131 radians/s
@@ -179,13 +192,14 @@ void getDataFromMPU()
       theta_predicted[i][1][0] = g_predicted[i][1][0];
       theta_predicted[i][1][1] = g_predicted[i][1][1];
       theta_predicted[i][1][2] = g_predicted[i][1][2];
-      
-    //Serial.print(theta_predicted[i][1][0]);Serial.print(" | ");Serial.print(theta_predicted[i][1][1]);Serial.print(" | ");Serial.print(theta_predicted[i][0][2]);Serial.println(" | ");
+
+    // Serial.print(theta_predicted[i][0][0]);Serial.print(" ");
+    // Serial.print(theta_predicted[i][1][0]);Serial.print(" | ");Serial.print(theta_predicted[i][1][1]);Serial.print(" | ");Serial.print(theta_predicted[i][0][2]);Serial.println(" | ");
     Kalman(theta_predicted[i][0],theta_predicted[i][1],time_elapsed[i],i);
     //delay(333); // To avoid too much results in the serial monitor;
     //Serial.println();
-    //Serial.print(theta[0][0]);Serial.print(" | ");Serial.print(theta[0][1]);Serial.print(" | ");Serial.println(theta[0][2]);
-    //Serial.println('\n');
+    // Serial.print(theta[0][0]);Serial.print(" | ");Serial.print(theta[0][1]);Serial.print(" | ");Serial.println(theta[0][2]);
+    // Serial.println('\n');
     //delay(333);
   }
 }
@@ -214,12 +228,21 @@ void loop()
   getDataFromMPU();
   for(int i = 1 ;i < Number_of_IMU ; i++)
   {
-    Serial.print("MPU ");Serial.print(i);Serial.print(" with respect to MPU ");Serial.println(0);
-    Serial.print("RelativeTheta X = "); Serial.print(theta[i][0] - theta[0][0]);
-    Serial.print(" | RelativeTheta_Y = "); Serial.print(theta[i][0] - theta[0][1]);
-    Serial.print(" | RelativeTheta_Z = "); Serial.println(theta[i][0] - theta[0][2]);
+      /*          
+          Debugging Code 
+         // Serial.print("MPU ");Serial.print(i);Serial.print(" with respect to MPU ");Serial.println(0);
+        // Serial.println(theta[i][0]);
+      */
+    /*
+     *  Code to compute relative angle between subsequent links updated
+     */
+    
+    Serial.print("MPU ");Serial.print(i);Serial.print(" with respect to MPU ");Serial.println(i-1);
+    Serial.print("RelativeTheta X = "); Serial.print(theta[i][0] - theta[i-1][0]);
+    Serial.print(" | RelativeTheta_Y = "); Serial.print(theta[i][0] - theta[i-1][1]);
+    Serial.print(" | RelativeTheta_Z = "); Serial.println(theta[i][0] - theta[i-1][2]);
+   
   }
   Serial.println('\n');
-  delay(333); // To avoid too much results in the serial monitor;
 }
 
