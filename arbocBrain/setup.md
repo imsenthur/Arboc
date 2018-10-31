@@ -73,8 +73,6 @@ and for the slave (Beaglebone Blue),
 ```
 We are assuming that "roscore" is being run only on the master and the slave subscribes to multiple topics that are being published. 
 
-![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/arbocNetwork.png)
-
 #### Time synchronization:
 You may have a discrepancy in system times between the master and slave. You can check it from the slave(Beaglebone Blue) using,
 ```html
@@ -99,6 +97,7 @@ Finally, make sure that the timezones between the master and slave are consisten
 ```
 Note that the above command changes the timezone to IST(Indian Standard Time).
 
+![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/arbocDiagnostics.png)
 #### Diagnostics:
 To start with, query the current time offset by running,
 ```html
@@ -127,6 +126,6 @@ Now try echoing the published topic,
   ~rostopic echo /hello
 ```
 you should be getting "hello"s on the output terminal at a rate of 10Hz.
+![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/arbocNetwork.png)
 
-![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/arbocDiagnostics.png)
 [Back To The Top](#arbocBrain)
