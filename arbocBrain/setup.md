@@ -78,7 +78,7 @@ We are assuming that "roscore" is being run only on the master and the slave sub
 #### Time synchronization:
 You may have a discrepancy in system times between the master and slave. You can check it from the slave(Beaglebone Blue) using,
 ```html
-	~ssh arboc.slave
+  ~ssh arboc.slave
   ~ntpdate -q arboc.master
 ```
 If there is a discrepancy, install chrony and ntpdate by running,
@@ -87,7 +87,7 @@ If there is a discrepancy, install chrony and ntpdate by running,
 ```
 Once the installation is successful, make sure you disable "automatic time update" so that the system time doesnot get changed during execution. In order to do disable it, run the following command,
 ```html
-	timedatectl set-ntp false
+  timedatectl set-ntp false
 ```
 Then configure chrony to query the server's system time, and slowly get the time in-sync. In order to do that, just open the file "/etc/chrony/chrony.conf" in your text editor and add these lines to it,
 ```html
@@ -128,5 +128,5 @@ Now try echoing the published topic,
 ```
 you should be getting "hello"s on the output terminal at a rate of 10Hz.
 
-![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/timeSynchronization.png)
+![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/arbocDiagnostics.png)
 [Back To The Top](#arbocBrain)
