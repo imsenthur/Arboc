@@ -13,6 +13,8 @@ The image mentioned above is a 8GB ubuntu-16.04 image which converts the attache
 
 Refer to https://dev.iachieved.it/iachievedit/expanding-your-beaglebone-microsd-filesystem/.
 
+![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/arbocSlave.png)
+
 #### ROS network configuration requirements:
 ROS has certain requirements for the network configuration:
 
@@ -56,8 +58,8 @@ Here "arboc.master" and "arboc.slave" corresponds to the IP address of the maste
 Once the environment variables are set you must be able to get the following output, 
 For the master (PC/server),
 ```html
-	~echo $ROS_MASTER_URI
-	http://arboc.master:11311
+  ~echo $ROS_MASTER_URI
+  http://arboc.master:11311
   ~echo $ROS_HOSTNAME
   arboc.master
 ```
@@ -70,6 +72,8 @@ and for the slave (Beaglebone Blue),
   arboc.slave
 ```
 We are assuming that "roscore" is being run only on the master and the slave subscribes to multiple topics that are being published. 
+
+![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/arbocNetwork.png)
 
 #### Time synchronization:
 You may have a discrepancy in system times between the master and slave. You can check it from the slave(Beaglebone Blue) using,
@@ -123,4 +127,6 @@ Now try echoing the published topic,
   ~rostopic echo /hello
 ```
 you should be getting "hello"s on the output terminal at a rate of 10Hz.
+
+![alt text](https://raw.githubusercontent.com/imsenthur/Arboc/master/arbocBrain/timeSynchronization.png)
 [Back To The Top](#arbocBrain)
